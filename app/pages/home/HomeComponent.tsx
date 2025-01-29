@@ -110,6 +110,7 @@ const HomeComponent = () => {
           </div>
         </main>
       </div>
+
       {homePageData.data?.sections[0].active == "1" && (
         <div className="second_section">
           <Container>
@@ -148,7 +149,7 @@ const HomeComponent = () => {
           </Container>
         </div>
       )}
-      {homePageData.data?.sections[1].active == "1" && (
+      {/* {homePageData.data?.sections[1].active == "1" && (
         <div className="three_section">
           <div className="images">
             <img src="/imgs/Frame_52.png" />
@@ -183,7 +184,7 @@ const HomeComponent = () => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
 
       {/* <div className='three_section secoond'>
         <div className='images'>
