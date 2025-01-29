@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+    font-family: 'Aptly';
+    src: url('/fonts/fonnts.com-Aptly.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.slick-next {
+    left: 65% !important;
+    bottom: -18% !important;
+    top: auto !important;
+    cursor: pointer !important;
+    width: unset !important;
+    height: unset !important;
+}
+
+.slick-arrow.slick-prev {
+    display: flex !important;
+    justify-content: space-around !important;
+}
+
+.slick-prev {
+    right: 35% !important;
+    bottom: -18% !important;
+    top: auto !important;
+    cursor: pointer !important;
+    width: unset !important;
+    height: unset !important;
+}
+
+.slick-prev {
+    left: 7% !important;
+}
+
+.slick-next:before,
+.slick-prev:before {
+    content: unset !important;
+}
+
+.bg-body-tertiary {
+    background-color: transparent !important;
+}
+
+.navbar-expand-lg .navbar-nav {
+    margin: 0 !important;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.fa-long-arrow-right,
+.fa-long-arrow-left {
+    color: #fff !important;
+    font-size: 20px !important;
+    border-radius: 32px;
+    border: 1px solid var(--Neutral-0---Primary-Background, #FFF);
+    padding: 20px;
+}
+
+.fa-long-arrow-right:hover,
+.fa-long-arrow-left:hover {
+    background-color: #FFF;
+    color: #045746 !important;
+}
+
+.sliders .fa.fa-long-arrow-right,
+.sliders .fa-long-arrow-left {
+    border-radius: 32px;
+    border: 1px solid var(--primary-700-default-aaa, #045746);
+    color: #045746 !important;
+}
+
+.sliders .fa.fa-long-arrow-right:hover,
+.sliders .fa-long-arrow-left:hover {
+    border-radius: 32px;
+    background-color: #045746;
+    border: 1px solid var(--primary-700-default-aaa, #045746);
+    color: #ffffff !important;
+}
+
+.slick-center img {
+    transform: scale(1.08) !important;
+}
+
+html[dir="rtl"] body.rtl {
+    font-family: "Zain", sans-serif !important;
+}
+
+body.rtl h1,
+body.rtl h2,
+body.rtl h3,
+body.rtl h4,
+body.rtl h5,
+body.rtl h6,
+body.rtl a,
+body.rtl span,
+body.rtl div,
+body.rtl,
+body.rtl p,
+body.rtl button,
+body.rtl li {
+    font-family: "Zain", sans-serif !important;
+}
+
+.slider_name .slick-initialized .slick-slide {
+    scale: unset !important;
+}
+
+[dir='rtl'] .slick-next {
+    direction: rtl;
+}
+
+.slick-initialized .slick-slide {
+    scale: 0.8 !important;
+}
+
+[dir='rtl'] .Home_slider .slick-slide {
+    float: inline-start;
+}
+
+[dir='rtl'] .slide_image .slick-slide {
+    float: inline-start;
+}
+
+
+/* [dir='rtl'] .slick-next {
+    right: auto;
+    left: unset !important;
+} */
+
+
+/* [dir='rtl'] .slick-slide {
+    float: left !important;
+} */
+
+
+/* [dir='rtl'] .slider_name .slick-slide {
+    float: left !important;
+    direction: rtl;
+}
+
+.slider_name .slick-slide {
+    float: inline-start;
+}
+
+.slider_name .slick-slider {
+    direction: ltr;
+}
+
+.slider_name .slick-slider .slick-track,
+.slider_name .slick-slider .slick-list {
+    direction: rtl;
+}
+
+.slider_name .slick-initialized .slick-slide {
+    display: table;
+} */
+
+@media(max-width:787px) {
+    .slick-prev {
+        right: 57% !important;
+    }
+    .slick-next,
+    .slick-prev {
+        bottom: -22% !important;
+    }
+    .fa-long-arrow-right,
+    .fa-long-arrow-left {
+        padding: 13px;
+    }
+    .nav_bar.navbar-nav a {
+        margin-right: 24px;
+        color: var(--text-icon-primary, #1F2020);
+        font-family: Aptly;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        list-style: none;
+        text-decoration: unset;
+        padding: 14px 0;
+    }
+    [dir='rtl'] .slider_name .slick-slide {
+        float: inline-start !important;
+    }
+    .slider_name .slick-slide {
+        float: inline-start;
+    }
+    .slider_name .slick-slide.slick-active.slick-current .selectedName {
+        background-color: #045746 !important;
+    }
+}

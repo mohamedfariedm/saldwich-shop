@@ -1,0 +1,68 @@
+.navBar {
+    position: relative;
+}
+
+.nav_bar {
+    display: flex;
+    margin: 0;
+}
+
+.flexed {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 60px;
+}
+
+.nav_bar.navbar-nav a {
+    margin-right: 24px;
+    color: var(--text-icon-primary, #1F2020);
+    font-family: Aptly;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    list-style: none;
+    text-decoration: unset;
+}
+
+.downloadButton {
+    border-radius: var(--paddings-gaps-p-12, 48px) !important;
+    border: 1px solid var(--primary-700-default-aaa, #045746) !important;
+    background-color: unset !important;
+    display: flex !important;
+    color: var(--primary-700-default-aaa, #045746) !important;
+    text-align: center !important;
+    font-family: Aptly !important;
+    font-size: 16px !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+    line-height: 150% !important;
+    align-items: center;
+    width: 205px;
+    text-align: center !important;
+    justify-content: center;
+    padding: 11px !important;
+}
+
+.downloadButton img {
+    margin: 0 1px;
+}
+
+@media(max-width: 768px) {
+    .navBar {
+        position: relative;
+        z-index: 9;
+        display: flow;
+        justify-content: space-around;
+        width: 100%;
+        max-width: 100%;
+    }
+    .navbar-expand-lg .navbar-nav {
+        margin: 0 !important;
+        display: flex;
+        flex-direction: column !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+}
