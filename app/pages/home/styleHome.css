@@ -377,8 +377,8 @@ body.rtl .title_mapping {
         flex-direction: unset;
     }
     .data_text {
-        height: 0;
-        padding-left: 10px;
+        height: 100%;
+        padding-left: 0;
     }
     .second_section {
         padding-top: 14px;

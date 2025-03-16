@@ -148,16 +148,15 @@ const HomeComponent = () => {
           </Container>
         </div>
       )}
-      
+      {homePageData.data?.sections[1].active == "1" && (
         <div className="three_section">
-          {homePageData.data?.sections[1].active == "1" && (
           <div className="images">
             <img src="/imgs/Frame_52.png" />
             <OurService service={homePageData.data?.sections[1]} />
             <img src="/imgs/Union.png" />
           </div>
-          )}
-          {/* {homePageData?.data?.category?.map((item: any) => (
+
+          {homePageData?.data?.category?.map((item: any) => (
             <div key={item.id}>
               <div className="inner_section">
                 <Container>
@@ -182,8 +181,9 @@ const HomeComponent = () => {
                 </div>
               </div>
             </div>
-          ))} */}
+          ))}
         </div>
+      )}
 
       {/* <div className='three_section secoond'>
         <div className='images'>

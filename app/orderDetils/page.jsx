@@ -161,7 +161,7 @@ const PageContent = () => {
           <h3>Where we are</h3>
           <ul>
             {orderData.data?.brands.map((itmes)=>(
-              <li key={itmes.id}><img src={itmes?.image[0]?.original} alt='Logo Mark' /></li>
+              <li key={itmes.id}><img src={itmes?.image.original} alt='Logo Mark' /></li>
             ))}
           </ul>
         </div>

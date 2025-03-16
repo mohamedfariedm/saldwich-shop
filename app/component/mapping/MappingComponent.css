@@ -104,8 +104,19 @@
     text-decoration: unset;
     list-style: none;
 }
-
+.mapping-desktop{
+    display: block;
+}
+.mapping-mobile{
+    display: none;
+}
 @media(max-width: 767px) {
+    .mapping-desktop{
+        display: none;
+    }
+    .mapping-mobile{
+        display: block;
+    }
     .mapping_button_10 {
         position: absolute;
         left: 17%;
