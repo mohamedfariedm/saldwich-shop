@@ -111,8 +111,8 @@ const MappingComponent = () => {
     <>
     <div className="mapping relative mapping-desktop">
       
-        <div className='md:w-[90%] mx-auto my-0 bg-white px-4 py-8 relative '>
-        <div className='absolute top-[19%] right-[11%]'>
+        <div className='md:w-[80%] mx-auto my-0 bg-white px-4 py-8 relative '>
+        <div className='absolute top-[19%] right-[1%]'>
           <p className="self-stretch justify-start text-Text+Icon-Primary text-xl font-normal font-['Aptly'] leading-[30px]">Where to Find Us</p>
           <h1 className="justify-start text-Text+Icon-Primary text-[56px] font-bold font-['Aptly'] leading-[67.20px]">Our Branches</h1>
         </div>
