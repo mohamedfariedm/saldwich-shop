@@ -1,310 +1,141 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
-'use client'
-import React, { useState, useEffect, useRef } from 'react';
-import { Container,Row,Col } from 'react-bootstrap';
-import { translate } from '../../translations/TranslationContext';
-import './MappingComponent.css';
+'use client';
 
-const MappingComponent = () => {
-  const [lang, setLang] = useState('en');
-  const [MappingData, setMapping] = useState<any>([]);
-  const [selectedLocation, setSelectedLocation] = useState<any>(null);
-  const [activeButton, setActiveButton] = useState(0);
-  const [positions, setPositions] = useState<any[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ top: '50%', left: '50%' });
+import React, { useEffect, useState } from 'react';
+import {
+  GoogleMap,
+  LoadScript,
+  MarkerF,
+  OverlayView,
+} from '@react-google-maps/api';
 
-  const imageRef = useRef<HTMLImageElement>(null);
+type Branch = {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+};
 
-  
-  const handleButtonClick = (location: any, index: any, position: any) => {
-    setSelectedLocation(location);
-    setActiveButton(index);
-    setModalPosition({
-      top: position.top,
-      left: position.left,
-    });
-    setShowModal(true);
-  };
+const center = {
+  lat: 24.774265, // وسط السعودية
+  lng: 46.738586,
+};
 
-  const generateRandomPosition = (existingPositions: any[]) => {
-    let newPosition;
-    const minDistance = 50; // الحد الأدنى للمسافة بين كل زر والآخر (بالبكسل)
-    let attempts = 0;
-    
-    const imageWidth = imageRef.current?.clientWidth || 1000; // عرض الصورة
-    const imageHeight = imageRef.current?.clientHeight || 1000; // ارتفاع الصورة
-  
-    do {
-      let left = Math.random() * (800 - 400) + 400; // نطاق `left` بين 400px و 800px
-      let top = Math.random() * (900 - 80) + 80; // `top` بين 80px و 900px
-  
-      newPosition = { left, top };
-      attempts++;
-    } while ((!isFarEnough(newPosition, existingPositions, minDistance) || attempts < 100) && attempts < 100);
-  
-    return {
-      left: `${(newPosition.left / imageWidth) * 100}%`, 
-      top: `${(newPosition.top / imageHeight) * 100}%`
-    };
-  };
-  
-  
+const containerStyle = {
+  width: '100%',
+  height: '100%',
+};
 
-  // التحقق من أن المواقع ليست متداخلة
-  const isFarEnough = (newPos: { left: number; top: number }, existingPositions: any[], minDistance: number) => {
-    return existingPositions.every(pos => {
-      const dx = newPos.left - parseFloat(pos.left);
-      const dy = newPos.top - parseFloat(pos.top);
-      return Math.sqrt(dx * dx + dy * dy) >= minDistance;
-    });
-  };
+const Map = () => {
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selected, setSelected] = useState<Branch | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [lang, setLang] = useState<'en' | 'ar'>('en');
 
   useEffect(() => {
-    const fetchMapping = async () => {
+    const fetchBranches = async () => {
       try {
         const storedLang = localStorage.getItem('lang') || 'en';
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Branch`, {
-          method: 'GET',
+        setLang(storedLang as 'en' | 'ar');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Branch`, {
           headers: {
             'Accept-Language': storedLang,
-          }
+          },
         });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        setMapping(data);
-
-        if (data.data.length > 0) {
-          setSelectedLocation(data.data[0]);
-          setActiveButton(0);
-        }
+        const json = await res.json();
+        setBranches(json.data);
       } catch (error) {
-        console.error('Error fetching home page data:', error);
+        console.error('Error loading branches', error);
       }
     };
 
-    fetchMapping();
+    fetchBranches();
   }, []);
 
-  useEffect(() => {
-    if (MappingData.data?.length > 0 && positions.length === 0) {
-      const storedPositions = localStorage.getItem('buttonPositions');
-      if (storedPositions) {
-        setPositions(JSON.parse(storedPositions));
-      } else {
-        const randomPositions: any = [];
-        for (let i = 0; i < MappingData.data.length; i++) {
-          randomPositions.push(generateRandomPosition(randomPositions));
-        }
-        setPositions(randomPositions);
-        localStorage.setItem('buttonPositions', JSON.stringify(randomPositions));
-      }
-    }
-  }, [MappingData]);
+  const translate = (key: string, lang: string) => {
+    const translations: any = {
+      Location: { en: 'Location', ar: 'الموقع' },
+      Direction: { en: 'Direction', ar: 'الاتجاهات' },
+    };
+    return translations[key]?.[lang] || key;
+  };
 
   return (
-    <>
-    <div className="mapping relative mapping-desktop">
-      
-        <div className='md:w-[70%] mx-auto my-0 bg-white px-4 py-8 relative '>
-        <div className='absolute top-[19%] right-[1%]'>
-          <p className="self-stretch justify-start text-Text+Icon-Primary text-xl font-normal font-['Aptly'] leading-[30px]">Where to Find Us</p>
-          <h1 className="justify-start text-Text+Icon-Primary text-[56px] font-bold font-['Aptly'] leading-[67.20px]">Our Branches</h1>
-        </div>
-        <div className="maping" style={{ position: 'relative', overflow: 'hidden' }}>
-          <img ref={imageRef} src="/GroupMaping.png" style={{ width: '100%', display: 'block' }} alt="Map" />
-          <div className=''>
-          {MappingData.data?.length > 0 &&
-            MappingData.data.map((location: any, index: any) => {
-              const position = positions[index];
-              if (!position) return null;
+    <div className="w-full flex justify-center px-4 py-8">
+      <div className="w-full max-w-[1280px] h-[617px] rounded-2xl overflow-hidden relative mb-24">
+        <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={10.5}
+            options={{
+              mapTypeControl: false,
+              fullscreenControl: false,
+              streetViewControl: false,
+            }}
+          >
+            {branches.map((branch, index) => {
+              const lat = parseFloat(branch.latitude);
+              const lng = parseFloat(branch.longitude);
               return (
-                <button
-                  key={index}
-                  className="mapping_button"
-                  style={{
-                    position: 'absolute',
-                    left: position.left,
-                    top: position.top,
-                    transform: 'translate(-200%, -0%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
+                <MarkerF
+                  key={branch.id}
+                  position={{ lat, lng }}
+                  icon={{
+                    url:
+                      activeIndex === index
+                        ? '/imgs/Point_location.svg'
+                        : '/imgs/Pointlocation.svg',
+                    scaledSize: new google.maps.Size(70, 70),
                   }}
-                  onClick={() => handleButtonClick(location, index, position)}
-                >
-                  <img src={activeButton === index ? '/imgs/Point_location.svg' : '/imgs/Pointlocation.svg'} alt="Location" />
-                </button>
+                  onClick={() => {
+                    setSelected(branch);
+                    setActiveIndex(index);
+                  }}
+                />
               );
             })}
-            </div>
-        </div>
-        </div>
-     
-      {showModal && selectedLocation && (
-        <div
-          className="modal_overlay"
-          onClick={() => setShowModal(false)}
-          style={{
-            position: 'absolute',
-            top: modalPosition.top,
-            left: modalPosition.left,
-            transform: 'translate(-50%, -100%)',
-            zIndex: 9999,
-            backgroundColor: 'rgb(255, 255, 255)',
-            borderRadius: '24px',
-            padding: '24px',
-            maxWidth: '24%',
-          }}
-        >
-          <div className="modal_content" onClick={(e) => e.stopPropagation()}>
-            <p>{translate('Location', lang)}</p>
-            <h1>{selectedLocation.name}</h1>
-            <p className="values">{selectedLocation.address}</p>
-            <div className="mapping_icons">
-              <div>
-                <img src="/imgs/location-09.svg" alt="Direction" />
-                <span>
-                  <a
-                    className="locations"
-                    href={`https://www.google.com/maps/search/?api=1&query=${selectedLocation.latitude},${selectedLocation.longitude}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {translate('Direction', lang)}
-                  </a>
-                </span>
-              </div>
-              <div>
-                <img src="/imgs/call1.svg" alt="Phone" />
-                <span className="phone_dir">{selectedLocation.phone || '+966XXXXXXXXX'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
 
-    <div className="mapping mapping-mobile">
-    <Container>
-      <Row>
-        <Col xs={12} md={6}>
-          <div className="maping">
-            <img src="/imgs/Map2.png" />
-            {MappingData.data?.length > 0 && MappingData.data.map((location: any, index: any) => {
-              const position = positions[index]; 
-              if (!position) {
-                return null; 
-              } 
-              return (
-                <button
-                  key={index}
-                  className="mapping_button"
-                  style={{
-                    left: position.left,
-                    top: position.top,
-                  }}
-                  onClick={() => handleButtonClick(location, index,position)}
+            {selected && (
+              <OverlayView
+                position={{
+                  lat: parseFloat(selected.latitude),
+                  lng: parseFloat(selected.longitude),
+                }}
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+              >
+                <div
+                  className="bg-white rounded-2xl p-5 shadow-lg w-[270px] md:w-[320px] text-black"
+                  style={{ transform: 'translate(-50%, -120%)' }}
+                  onClick={() => setSelected(null)}
                 >
-                  <img src={activeButton === index ? '/imgs/Point_location.svg' : '/imgs/Pointlocation.svg'} />
-                </button>
-              );
-            })}
-          </div>
-        </Col>
-        <Col>
-          {selectedLocation ? (
-            <div className="title_mapping">
-              <p>{translate('Location', lang)}</p>
-              <h1>{selectedLocation.name}</h1>
-              <p className="values">{selectedLocation.address}</p>
-              <div className="mapping_icons">
-                <div>
-                  <img src="/imgs/location-09.svg" />
-                  <span>
-                    <a className="locations" href={`https://www.google.com/maps/search/?api=1&query=${selectedLocation.latitude},${selectedLocation.longitude}`} target="_blank" rel="noopener noreferrer">
+                  <p className="text-sm text-gray-500">{translate('Location', lang)}</p>
+                  <h1 className="text-xl font-semibold">{selected.name}</h1>
+                  <p className="text-sm text-gray-600 mt-1">{selected.address}</p>
+                  <div className="flex items-center gap-3 mt-4">
+                    <img src="/imgs/location-09.svg" className="w-5 h-5" alt="Direction" />
+                    <a
+                      className="text-blue-600 underline text-sm"
+                      href={`https://www.google.com/maps/search/?api=1&query=${selected.latitude},${selected.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {translate('Direction', lang)}
                     </a>
-                  </span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <img src="/imgs/call1.svg" className="w-5 h-5" alt="Phone" />
+                    <span className="text-sm">{selected.phone || '+966XXXXXXXXX'}</span>
+                  </div>
                 </div>
-                <div>
-                  <img src="/imgs/call1.svg" />
-                  <span className="phone_dir">{selectedLocation.phone || '+966XXXXXXXXX'}</span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <p>{translate('Loading...', lang)}</p>
-          )}
-        </Col>
-      </Row>
-    </Container>
-  </div>
-  </>
+              </OverlayView>
+            )}
+          </GoogleMap>
+        </LoadScript>
+      </div>
+    </div>
   );
 };
 
-export default MappingComponent;
-
-
-
-{/* <div className="mapping">
-      <Container>
-        <Row>
-          <Col xs={12} md={6}>
-            <div className="maping">
-              <img src="/imgs/Map2.png" />
-              {MappingData.data?.length > 0 && MappingData.data.map((location: any, index: any) => {
-                const position = positions[index]; 
-                if (!position) {
-                  return null; 
-                } 
-                return (
-                  <button
-                    key={index}
-                    className="mapping_button"
-                    style={{
-                      left: position.left,
-                      top: position.top,
-                    }}
-                    onClick={() => handleButtonClick(location, index)}
-                  >
-                    <img src={activeButton === index ? '/imgs/Point_location.svg' : '/imgs/Pointlocation.svg'} />
-                  </button>
-                );
-              })}
-            </div>
-          </Col>
-          <Col>
-            {selectedLocation ? (
-              <div className="title_mapping">
-                <p>{translate('Location', lang)}</p>
-                <h1>{selectedLocation.name}</h1>
-                <p className="values">{selectedLocation.address}</p>
-                <div className="mapping_icons">
-                  <div>
-                    <img src="/imgs/location-09.svg" />
-                    <span>
-                      <a className="locations" href={`https://www.google.com/maps/search/?api=1&query=${selectedLocation.latitude},${selectedLocation.longitude}`} target="_blank" rel="noopener noreferrer">
-                        {translate('Direction', lang)}
-                      </a>
-                    </span>
-                  </div>
-                  <div>
-                    <img src="/imgs/call1.svg" />
-                    <span className="phone_dir">{selectedLocation.phone || '+966XXXXXXXXX'}</span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p>{translate('Loading...', lang)}</p>
-            )}
-          </Col>
-        </Row>
-      </Container>
-    </div> */}
+export default Map;
